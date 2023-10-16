@@ -1,14 +1,17 @@
 package com.yl.project.controller;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import com.google.gson.Gson;
 import com.yl.project.annotation.AuthCheck;
 import com.yl.project.common.*;
 import com.yl.project.constant.CommonConstant;
 import com.yl.project.esdao.exception.BusinessException;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoAddRequest;
+import com.yl.project.model.dto.interfaceInfo.InterfaceInfoInvokeRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
 import com.yl.project.model.entity.InterfaceInfo;
@@ -273,6 +276,38 @@ public class InterfaceInfoController {
         }
 
 
+    @PostMapping("/invoke")
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                    HttpServletRequest request) {
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
 
+        Long id = interfaceInfoInvokeRequest.getId();
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+        // 判断是否存在
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
+        if (interfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+
+        if (!interfaceInfo.getStatus().equals(InterfaceInfoStatusEnum.ONLINE.getValue())) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口状态不为开启");
+        }
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        YApiClient yApiClient1 = new YApiClient(accessKey, secretKey);
+
+
+        Gson gson = new Gson();
+
+        com.yl.yapiclientsdk.model.User user = gson.fromJson(userRequestParams,
+                com.yl.yapiclientsdk.model.User.class);
+        // todo 更改为根据接口的url地址进行调用
+        String result = yApiClient1.getUsernameByPost(user);
+        //String result = yApiClient1.getNameByGet("hhhh");
+        return ResultUtils.success(result);
+    }
 
 }

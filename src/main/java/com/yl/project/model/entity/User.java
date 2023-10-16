@@ -60,7 +60,7 @@ public class User implements Serializable {
     /**
      * serectKey
      */
-    private String secretkey;
+    private String secretKey;
 
     /**
      * 用户简介
