@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.yl.project.annotation.AuthCheck;
 import com.yl.project.common.*;
 import com.yl.project.constant.CommonConstant;
+import com.yl.project.constant.UserConstant;
 import com.yl.project.esdao.exception.BusinessException;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoAddRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoInvokeRequest;
@@ -51,17 +52,17 @@ public class InterfaceInfoController {
     /**
      * 创建
      *
-     * @param InterfaceInfoAddRequest
+     * @param interfaceInfoAddRequest
      * @param request
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addInterfaceInfo(@RequestBody InterfaceInfoAddRequest InterfaceInfoAddRequest, HttpServletRequest request) {
-        if (InterfaceInfoAddRequest == null) {
+    public BaseResponse<Long> addInterfaceInfo(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest, HttpServletRequest request) {
+        if (interfaceInfoAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         InterfaceInfo InterfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(InterfaceInfoAddRequest, InterfaceInfo);
+        BeanUtils.copyProperties(interfaceInfoAddRequest, InterfaceInfo);
         // 校验
         interfaceInfoService.validInterfaceInfo(InterfaceInfo, true);
         User loginUser = userService.getLoginUser(request);
@@ -82,6 +83,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/delete")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> deleteInterfaceInfo(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -142,7 +144,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/online")
-    @AuthCheck(mustRole = "admin")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest,
                                                      HttpServletRequest request) {
         if (idRequest == null || idRequest.getId() <= 0) {
@@ -185,7 +187,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/offline")
-    @AuthCheck(mustRole = "admin")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IdRequest idRequest,
                                                       HttpServletRequest request) {
         if (idRequest == null || idRequest.getId() <= 0) {
@@ -228,7 +230,7 @@ public class InterfaceInfoController {
          * @param interfaceInfoQueryRequest
          * @return
          */
-        @AuthCheck(mustRole = "admin")
+        @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
         @GetMapping("/list")
         public BaseResponse<List<InterfaceInfo>> listInterfaceInfo (InterfaceInfoQueryRequest interfaceInfoQueryRequest)
         {
