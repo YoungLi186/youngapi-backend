@@ -15,8 +15,6 @@ import com.yl.project.model.dto.interfaceInfo.InterfaceInfoAddRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoInvokeRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
-import com.yl.project.model.entity.InterfaceInfo;
-import com.yl.project.model.entity.User;
 import com.yl.project.model.enums.InterfaceInfoStatusEnum;
 import com.yl.project.service.InterfaceInfoService;
 import com.yl.project.service.UserService;
@@ -25,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import yapicommon.model.entity.InterfaceInfo;
+import yapicommon.model.entity.User;
 
 
 import javax.annotation.Resource;

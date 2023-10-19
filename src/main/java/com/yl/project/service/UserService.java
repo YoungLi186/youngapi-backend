@@ -3,9 +3,11 @@ package com.yl.project.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yl.project.model.dto.user.UserQueryRequest;
-import com.yl.project.model.entity.User;
+
 import com.yl.project.model.vo.LoginUserVO;
 import com.yl.project.model.vo.UserVO;
+import yapicommon.model.entity.User;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 

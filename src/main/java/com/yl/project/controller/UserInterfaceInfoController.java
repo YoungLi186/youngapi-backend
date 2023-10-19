@@ -11,8 +11,7 @@ import com.yl.project.esdao.exception.BusinessException;
 import com.yl.project.model.dto.userinterfaceinfo.UserInterfaceInfoAddRequest;
 import com.yl.project.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import com.yl.project.model.dto.userinterfaceinfo.UserInterfaceInfoUpdateRequest;
-import com.yl.project.model.entity.UserInterfaceInfo;
-import com.yl.project.model.entity.User;
+
 import com.yl.project.service.UserInterfaceInfoService;
 import com.yl.project.service.UserService;
 import com.yl.yapiclientsdk.client.YApiClient;
@@ -20,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import yapicommon.model.entity.User;
+import yapicommon.model.entity.UserInterfaceInfo;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

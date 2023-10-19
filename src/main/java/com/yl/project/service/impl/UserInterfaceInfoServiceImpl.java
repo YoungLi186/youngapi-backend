@@ -4,12 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yl.project.common.ErrorCode;
 import com.yl.project.esdao.exception.BusinessException;
-import com.yl.project.model.entity.InterfaceInfo;
-import com.yl.project.model.entity.UserInterfaceInfo;
 import com.yl.project.service.UserInterfaceInfoService;
 import com.yl.project.mapper.UserInterfaceInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import yapicommon.model.entity.UserInterfaceInfo;
 
 /**
  * @author 18683

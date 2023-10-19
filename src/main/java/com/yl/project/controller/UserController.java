@@ -15,7 +15,6 @@ import com.yl.project.model.dto.user.UserQueryRequest;
 import com.yl.project.model.dto.user.UserRegisterRequest;
 import com.yl.project.model.dto.user.UserUpdateMyRequest;
 import com.yl.project.model.dto.user.UserUpdateRequest;
-import com.yl.project.model.entity.User;
 import com.yl.project.model.vo.LoginUserVO;
 import com.yl.project.model.vo.UserVO;
 import com.yl.project.service.UserService;
@@ -30,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import yapicommon.model.entity.User;
 
 /**
  * 用户接口

@@ -1,7 +1,8 @@
 package com.yl.project.service;
 
-import com.yl.project.model.entity.InterfaceInfo;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import yapicommon.model.entity.InterfaceInfo;
 
 /**
 * @author 18683

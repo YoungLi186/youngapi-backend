@@ -3,7 +3,7 @@ package com.yl.project.aop;
 import com.yl.project.annotation.AuthCheck;
 import com.yl.project.common.ErrorCode;
 import com.yl.project.esdao.exception.BusinessException;
-import com.yl.project.model.entity.User;
+
 import com.yl.project.model.enums.UserRoleEnum;
 import com.yl.project.service.UserService;
 import javax.annotation.Resource;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import yapicommon.model.entity.User;
 
 /**
  * 权限校验 AOP

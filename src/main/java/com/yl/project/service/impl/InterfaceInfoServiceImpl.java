@@ -3,11 +3,11 @@ package com.yl.project.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yl.project.common.ErrorCode;
 import com.yl.project.esdao.exception.BusinessException;
-import com.yl.project.model.entity.InterfaceInfo;
 import com.yl.project.service.InterfaceInfoService;
 import com.yl.project.mapper.InterfaceInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import yapicommon.model.entity.InterfaceInfo;
 
 /**
 * @author 18683

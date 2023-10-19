@@ -12,7 +12,6 @@ import com.yl.project.constant.CommonConstant;
 import com.yl.project.esdao.exception.BusinessException;
 import com.yl.project.mapper.UserMapper;
 import com.yl.project.model.dto.user.UserQueryRequest;
-import com.yl.project.model.entity.User;
 import com.yl.project.model.enums.UserRoleEnum;
 import com.yl.project.model.vo.LoginUserVO;
 import com.yl.project.model.vo.UserVO;
@@ -27,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import yapicommon.model.entity.User;
 
 /**
  * 用户服务实现

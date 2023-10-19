@@ -1,7 +1,8 @@
 package com.yl.project.mapper;
 
-import com.yl.project.model.entity.UserInterfaceInfo;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import yapicommon.model.entity.UserInterfaceInfo;
 
 /**
  * @author 18683
