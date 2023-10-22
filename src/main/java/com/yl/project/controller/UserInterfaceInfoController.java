@@ -60,6 +60,7 @@ public class UserInterfaceInfoController {
         // 校验
         userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, true);
 
+
         userInterfaceInfo.setUserId(userInterfaceInfoAddRequest.getUserId());
         boolean result = userInterfaceInfoService.save(userInterfaceInfo);
         if (!result) {
@@ -97,7 +98,7 @@ public class UserInterfaceInfoController {
     }
 
     /**
-     * 更新
+     * 更新接口调用次数
      *
      * @param UserInterfaceInfoUpdateRequest
      * @param request
@@ -113,15 +114,41 @@ public class UserInterfaceInfoController {
         BeanUtils.copyProperties(UserInterfaceInfoUpdateRequest, userInterfaceInfo);
         // 参数校验
         userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, false);
-        User user = userService.getLoginUser(request);
         // 判断是否存在
-
-        UserInterfaceInfo oldUserInterfaceInfo = userInterfaceInfoService.getById(userInterfaceInfo);
+        QueryWrapper<UserInterfaceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userId", userInterfaceInfo.getUserId());
+        queryWrapper.eq("interfaceInfoId", userInterfaceInfo.getInterfaceInfoId());
+        UserInterfaceInfo oldUserInterfaceInfo = userInterfaceInfoService.getOne(queryWrapper);
         if (oldUserInterfaceInfo == null) {
-            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "请求数据不存在");
         }
-
         boolean result = userInterfaceInfoService.updateById(userInterfaceInfo);
+        return ResultUtils.success(result);
+    }
+
+
+    @PostMapping("/addInterfaceTimes")
+    public BaseResponse<Boolean> addInterfaceTimes(@RequestBody UserInterfaceInfoUpdateRequest UserInterfaceInfoUpdateRequest,
+                                                   HttpServletRequest request) {
+        if (UserInterfaceInfoUpdateRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        UserInterfaceInfo userInterfaceInfo = new UserInterfaceInfo();
+        BeanUtils.copyProperties(UserInterfaceInfoUpdateRequest, userInterfaceInfo);
+        // 参数校验
+        userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, false);
+        // 判断是否存在
+        QueryWrapper<UserInterfaceInfo> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("userId", userInterfaceInfo.getUserId());
+        queryWrapper.eq("interfaceInfoId", userInterfaceInfo.getInterfaceInfoId());
+        UserInterfaceInfo oldUserInterfaceInfo = userInterfaceInfoService.getOne(queryWrapper);
+        if (oldUserInterfaceInfo == null) {
+            userInterfaceInfo.setLeftNum(50);
+            boolean result = userInterfaceInfoService.save(userInterfaceInfo);
+            return ResultUtils.success(result);
+        }
+        boolean result = userInterfaceInfoService.addInterfaceInfoTimes(userInterfaceInfo.getInterfaceInfoId(), userInterfaceInfo.getUserId());
         return ResultUtils.success(result);
     }
 

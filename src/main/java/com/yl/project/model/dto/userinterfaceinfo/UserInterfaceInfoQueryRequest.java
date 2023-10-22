@@ -1,9 +1,5 @@
 package com.yl.project.model.dto.userinterfaceinfo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.yl.project.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
