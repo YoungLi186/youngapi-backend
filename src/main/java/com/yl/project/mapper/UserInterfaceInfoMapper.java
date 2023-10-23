@@ -2,6 +2,7 @@ package com.yl.project.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.yl.project.model.vo.MyInterfaceInfoVO;
 import yapicommon.model.entity.UserInterfaceInfo;
 
 import java.util.List;
@@ -15,6 +16,10 @@ import java.util.List;
 public interface UserInterfaceInfoMapper extends BaseMapper<UserInterfaceInfo> {
 
     List<UserInterfaceInfo> listTopInvokeInterfaceInfo(int limit);
+
+    List<MyInterfaceInfoVO> listMyInterfaceInfo(Long userId);
+
+
 }
 
 

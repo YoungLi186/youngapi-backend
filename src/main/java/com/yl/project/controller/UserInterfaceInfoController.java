@@ -8,10 +8,13 @@ import com.yl.project.common.*;
 import com.yl.project.constant.CommonConstant;
 import com.yl.project.constant.UserConstant;
 import com.yl.project.esdao.exception.BusinessException;
+import com.yl.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yl.project.model.dto.userinterfaceinfo.UserInterfaceInfoAddRequest;
 import com.yl.project.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import com.yl.project.model.dto.userinterfaceinfo.UserInterfaceInfoUpdateRequest;
 
+import com.yl.project.model.vo.InterfaceInfoVO;
+import com.yl.project.model.vo.MyInterfaceInfoVO;
 import com.yl.project.service.UserInterfaceInfoService;
 import com.yl.project.service.UserService;
 import com.yl.yapiclientsdk.client.YApiClient;
@@ -19,12 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import yapicommon.model.entity.InterfaceInfo;
 import yapicommon.model.entity.User;
 import yapicommon.model.entity.UserInterfaceInfo;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Date: 2023/10/16 - 10 - 16 - 15:15
@@ -218,5 +223,22 @@ public class UserInterfaceInfoController {
         Page<UserInterfaceInfo> UserInterfaceInfoPage = userInterfaceInfoService.page(new Page<>(current, size), queryWrapper);
         return ResultUtils.success(UserInterfaceInfoPage);
     }
+
+
+    @PostMapping("/myInterfaceInfo/page/vo")
+    public BaseResponse<Page<MyInterfaceInfoVO>> listInterfaceInfoVOByPage(@RequestBody UserInterfaceInfoQueryRequest userInterfaceInfoQueryRequest, HttpServletRequest request) {
+        if (userInterfaceInfoQueryRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Long userId = userInterfaceInfoQueryRequest.getUserId();
+        long current = userInterfaceInfoQueryRequest.getCurrent();
+        long pageSize = userInterfaceInfoQueryRequest.getPageSize();
+        List<MyInterfaceInfoVO> myInterfaceInfoVOs = userInterfaceInfoService.getMyInterfaceInfoVO(userId);
+        Page<MyInterfaceInfoVO> myInterfaceInfoVOPage = new Page<>(current, pageSize);
+        myInterfaceInfoVOPage.setTotal(myInterfaceInfoVOs.size());
+        myInterfaceInfoVOPage.setRecords(myInterfaceInfoVOs);
+        return ResultUtils.success(myInterfaceInfoVOPage);
+    }
+
 
 }

@@ -4,11 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yl.project.common.ErrorCode;
 import com.yl.project.esdao.exception.BusinessException;
+import com.yl.project.model.vo.MyInterfaceInfoVO;
 import com.yl.project.service.UserInterfaceInfoService;
 import com.yl.project.mapper.UserInterfaceInfoMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import yapicommon.model.entity.UserInterfaceInfo;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author 18683
@@ -18,6 +23,10 @@ import yapicommon.model.entity.UserInterfaceInfo;
 @Service
 public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoMapper, UserInterfaceInfo>
         implements UserInterfaceInfoService {
+
+
+    @Resource
+    private UserInterfaceInfoMapper userInterfaceInfoMapper;
 
     @Override
     public void validUserInterfaceInfo(UserInterfaceInfo userInterfaceInfo, boolean b) {
@@ -33,7 +42,7 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户或接口不存在");
             }
         }
-        if (userInterfaceInfo.getLeftNum() < 0) {
+        if (userInterfaceInfo.getLeftNum() == null || userInterfaceInfo.getLeftNum() < 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "剩余调用次数不能小于0");
         }
     }
@@ -61,6 +70,14 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         updateWrapper.eq("userId", userId);
         updateWrapper.setSql("leftNum = leftNum + 50");
         return this.update(updateWrapper);
+    }
+
+    @Override
+    public List<MyInterfaceInfoVO> getMyInterfaceInfoVO(long userId) {
+        if (userId < 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return userInterfaceInfoMapper.listMyInterfaceInfo(userId);
     }
 
 }

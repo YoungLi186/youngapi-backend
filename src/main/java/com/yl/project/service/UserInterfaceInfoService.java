@@ -1,7 +1,10 @@
 package com.yl.project.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yl.project.model.vo.MyInterfaceInfoVO;
 import yapicommon.model.entity.UserInterfaceInfo;
+
+import java.util.List;
 
 /**
  * @author 18683
@@ -15,4 +18,7 @@ public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
     boolean invokeCount(long interfaceInfoId, long userId);
 
     boolean addInterfaceInfoTimes(long interfaceInfoId, long userId);
+
+    List<MyInterfaceInfoVO> getMyInterfaceInfoVO(long userId);
+
 }
