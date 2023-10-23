@@ -58,21 +58,22 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Long> addInterfaceInfo(@RequestBody InterfaceInfoAddRequest interfaceInfoAddRequest, HttpServletRequest request) {
         if (interfaceInfoAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        InterfaceInfo InterfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(interfaceInfoAddRequest, InterfaceInfo);
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        BeanUtils.copyProperties(interfaceInfoAddRequest, interfaceInfo);
         // 校验
-        interfaceInfoService.validInterfaceInfo(InterfaceInfo, true);
+        interfaceInfoService.validInterfaceInfo(interfaceInfo, true);
         User loginUser = userService.getLoginUser(request);
-        InterfaceInfo.setUserId(loginUser.getId());
-        boolean result = interfaceInfoService.save(InterfaceInfo);
+        interfaceInfo.setUserId(loginUser.getId());
+        boolean result = interfaceInfoService.save(interfaceInfo);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
-        long newInterfaceInfoId = InterfaceInfo.getId();
+        long newInterfaceInfoId = interfaceInfo.getId();
         return ResultUtils.success(newInterfaceInfoId);
     }
 
