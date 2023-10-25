@@ -15,13 +15,5 @@ class YapiInterfaceApplicationTests {
     private YApiClient yApiClient;
 
 
-    @Test
-    void contextLoads() {
-        User user = new User();
-        user.setUsername("hhh");
-        String usernameByPost = yApiClient.getUsernameByPost(user);
-        System.out.println(usernameByPost);
-
-    }
 
 }

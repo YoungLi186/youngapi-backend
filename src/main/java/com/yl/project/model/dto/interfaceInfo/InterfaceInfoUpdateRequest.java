@@ -1,10 +1,13 @@
 package com.yl.project.model.dto.interfaceInfo;
 
 
+import com.yl.project.model.vo.RequestParamsRemarkVO;
+import com.yl.project.model.vo.ResponseParamsRemarkVO;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户更新个人信息请求
@@ -32,6 +35,16 @@ public class InterfaceInfoUpdateRequest implements Serializable {
      * 接口地址
      */
     private String url;
+
+
+    /**
+     * 请求参数说明
+     */
+    private List<RequestParamsRemarkVO> requestParamsRemark;
+    /**
+     * 响应参数说明
+     */
+    private List<ResponseParamsRemarkVO> responseParamsRemark;
 
     /**
      * 请求参数

@@ -51,11 +51,9 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 1. 请求日志
         ServerHttpRequest request = exchange.getRequest();
-        String path = INTERFACE_HOST + request.getPath().value();
-        String method = request.getMethod().toString();
+        String path = request.getPath().value();
         log.info("请求唯一标识：" + request.getId());
         log.info("请求路径：" + path);
-        log.info("请求方法：" + method);
         log.info("请求参数：" + request.getQueryParams());
         String sourceAddress = request.getLocalAddress().getHostString();
         log.info("请求来源地址：" + sourceAddress);
@@ -73,8 +71,9 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String timestamp = headers.getFirst("timestamp");
         String sign = headers.getFirst("sign");
         String body = headers.getFirst("body");
+        String method = headers.getFirst("method");
 
-        // todo 实际情况应该是去数据库中查是否已分配给用户
+        //  实际情况应该是去数据库中查是否已分配给用户
         User invokeUser = null;
         try {
             invokeUser = innerUserService.getInvokeUser(accessKey);
@@ -84,9 +83,10 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (invokeUser == null) {
             return handleNoAuth(response);
         }
-        if (Long.parseLong(nonce) > 10000L) {
-            return handleNoAuth(response);
-        }
+
+//        if (Long.parseLong(nonce) > 10000L) {
+//            return handleNoAuth(response);
+//        }
         // 时间和当前时间不能超过 5 分钟
         Long currentTime = System.currentTimeMillis() / 1000;
         final Long FIVE_MINUTES = 60 * 5L;

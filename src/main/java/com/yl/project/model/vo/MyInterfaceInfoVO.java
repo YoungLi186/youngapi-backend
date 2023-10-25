@@ -9,9 +9,8 @@ import java.util.Date;
 /**
  * 个人接口信息封装视图
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class MyInterfaceInfoVO extends InterfaceInfo {
+public class MyInterfaceInfoVO {
 
 
     /**

@@ -17,6 +17,8 @@ import com.yl.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yl.project.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
 import com.yl.project.model.enums.InterfaceInfoStatusEnum;
 import com.yl.project.model.vo.InterfaceInfoVO;
+import com.yl.project.model.vo.RequestParamsRemarkVO;
+import com.yl.project.model.vo.ResponseParamsRemarkVO;
 import com.yl.project.service.InterfaceInfoService;
 import com.yl.project.service.UserService;
 import com.yl.yapiclientsdk.client.YApiClient;
@@ -27,10 +29,11 @@ import org.springframework.web.bind.annotation.*;
 import yapicommon.model.entity.InterfaceInfo;
 import yapicommon.model.entity.User;
 
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 接口信息 接口
@@ -65,6 +68,16 @@ public class InterfaceInfoController {
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
         BeanUtils.copyProperties(interfaceInfoAddRequest, interfaceInfo);
+
+        List<RequestParamsRemarkVO> requestParamsRemark = interfaceInfoAddRequest.getRequestParamsRemark();
+        List<ResponseParamsRemarkVO> responseParamsRemark = interfaceInfoAddRequest.getResponseParamsRemark();
+        if (requestParamsRemark != null) {
+            interfaceInfo.setRequestParamsRemark(JSONUtil.toJsonStr(requestParamsRemark));
+        }
+        if (responseParamsRemark != null) {
+            interfaceInfo.setResponseParamsRemark(JSONUtil.toJsonStr(responseParamsRemark));
+        }
+
         // 校验
         interfaceInfoService.validInterfaceInfo(interfaceInfo, true);
         User loginUser = userService.getLoginUser(request);
@@ -108,22 +121,30 @@ public class InterfaceInfoController {
     /**
      * 更新
      *
-     * @param InterfaceInfoUpdateRequest
+     * @param interfaceInfoUpdateRequest
      * @param request
      * @return
      */
     @PostMapping("/update")
-    public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest InterfaceInfoUpdateRequest,
+    public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest,
                                                      HttpServletRequest request) {
-        if (InterfaceInfoUpdateRequest == null || InterfaceInfoUpdateRequest.getId() <= 0) {
+        if (interfaceInfoUpdateRequest == null || interfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         InterfaceInfo interfaceInfo = new InterfaceInfo();
-        BeanUtils.copyProperties(InterfaceInfoUpdateRequest, interfaceInfo);
+        BeanUtils.copyProperties(interfaceInfoUpdateRequest, interfaceInfo);
+        List<RequestParamsRemarkVO> requestParamsRemark = interfaceInfoUpdateRequest.getRequestParamsRemark();
+        List<ResponseParamsRemarkVO> responseParamsRemark = interfaceInfoUpdateRequest.getResponseParamsRemark();
+        if (requestParamsRemark != null) {
+            interfaceInfo.setRequestParamsRemark(JSONUtil.toJsonStr(requestParamsRemark));
+        }
+        if (responseParamsRemark != null) {
+            interfaceInfo.setResponseParamsRemark(JSONUtil.toJsonStr(responseParamsRemark));
+        }
         // 参数校验
         interfaceInfoService.validInterfaceInfo(interfaceInfo, false);
         User user = userService.getLoginUser(request);
-        long id = InterfaceInfoUpdateRequest.getId();
+        long id = interfaceInfoUpdateRequest.getId();
         // 判断是否存在
         InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
         if (oldInterfaceInfo == null) {
@@ -148,7 +169,7 @@ public class InterfaceInfoController {
     @PostMapping("/online")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest,
-                                                     HttpServletRequest request) {
+                                                     HttpServletRequest request) throws UnsupportedEncodingException {
         if (idRequest == null || idRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -162,22 +183,23 @@ public class InterfaceInfoController {
         if (oldInterfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
+        String method = oldInterfaceInfo.getMethod();
+        String requestParams = oldInterfaceInfo.getRequestParams();
+        String url = oldInterfaceInfo.getUrl();
 
-        //判断接口是否可以成功调用
-        //todo 修改客户端调用为通用
-        com.yl.yapiclientsdk.model.User user = new
-                com.yl.yapiclientsdk.model.User();
-        user.setUsername("yl");
-        String username = yApiClient.getUsernameByPost(user);
-
-        if (StringUtils.isBlank(username)) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口无法调用");
+        try {
+            //判断接口是否可以成功调用
+            String result = yApiClient.invokeInterface(requestParams, url, method);
+            if (StringUtils.isBlank(result)) {
+                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口无法调用");
+            }
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
         }
-
         //将状态设置为开启
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
-        boolean result = interfaceInfoService.updateById(interfaceInfo);
-        return ResultUtils.success(result);
+        boolean success = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(success);
     }
 
 
@@ -289,8 +311,8 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<InterfaceInfo>> listInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest
-                                                                               interfaceInfoQueryRequest, HttpServletRequest request) {
+    public BaseResponse<Page<InterfaceInfoVO>> listInterfaceInfoVOByPage(@RequestBody InterfaceInfoQueryRequest
+                                                                                 interfaceInfoQueryRequest, HttpServletRequest request) {
         if (interfaceInfoQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -315,13 +337,8 @@ public class InterfaceInfoController {
         queryWrapper.orderBy(StringUtils.isNotBlank(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         Page<InterfaceInfo> interfaceInfoPage = interfaceInfoService.page(new Page<>(current, size), queryWrapper);
-        List<InterfaceInfo> interfaceInfos = interfaceInfoPage.getRecords();
-        interfaceInfos.stream().map(interfaceInfo -> {
-            InterfaceInfoVO interfaceInfoVO = new InterfaceInfoVO();
-            BeanUtils.copyProperties(interfaceInfo, interfaceInfoVO);
-            return interfaceInfoVO;
-        });
-        return ResultUtils.success(interfaceInfoPage);
+        Page<InterfaceInfoVO> interfaceInfoVOPage = interfaceInfoService.getInterfaceInfoVOPage(interfaceInfoPage, request);
+        return ResultUtils.success(interfaceInfoVOPage);
     }
 
 
@@ -341,15 +358,14 @@ public class InterfaceInfoController {
         if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        InterfaceInfoVO interfaceInfoVO = new InterfaceInfoVO();
-        BeanUtils.copyProperties(interfaceInfo, interfaceInfoVO);
+        InterfaceInfoVO interfaceInfoVO = interfaceInfoService.getInterfaceInfoVO(interfaceInfo, request);
         return ResultUtils.success(interfaceInfoVO);
     }
 
 
     @PostMapping("/invoke")
     public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request) throws UnsupportedEncodingException {
         if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -369,15 +385,10 @@ public class InterfaceInfoController {
         String accessKey = loginUser.getAccessKey();
         String secretKey = loginUser.getSecretKey();
         YApiClient yApiClient1 = new YApiClient(accessKey, secretKey);
-
-
-        Gson gson = new Gson();
-
-        com.yl.yapiclientsdk.model.User user = gson.fromJson(userRequestParams,
-                com.yl.yapiclientsdk.model.User.class);
-        // todo 更改为根据接口的url地址进行调用
-        String result = yApiClient1.getUsernameByPost(user);
-        //String result = yApiClient1.getNameByGet("hhhh");
+        //调用
+        String method = interfaceInfo.getMethod();
+        String url = interfaceInfo.getUrl();
+        String result = yApiClient1.invokeInterface(userRequestParams, url, method);
         return ResultUtils.success(result);
     }
 

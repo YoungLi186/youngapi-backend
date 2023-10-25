@@ -1,19 +1,22 @@
 package com.yl.project.model.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.beans.BeanUtils;
 import yapicommon.model.entity.InterfaceInfo;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 接口信息封装视图
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class InterfaceInfoVO extends InterfaceInfo {
+public class InterfaceInfoVO implements Serializable {
 
     private Long id;
 
@@ -31,6 +34,16 @@ public class InterfaceInfoVO extends InterfaceInfo {
      * 请求参数
      */
     private String requestParams;
+
+    /**
+     * 请求参数说明
+     */
+    private List<RequestParamsRemarkVO> requestParamsRemark;
+
+    /**
+     * 响应参数说明
+     */
+    private List<ResponseParamsRemarkVO> responseParamsRemark;
 
     /**
      * 请求头
@@ -72,4 +85,55 @@ public class InterfaceInfoVO extends InterfaceInfo {
      */
     private Integer totalNum;
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 包装类转对象
+     *
+     * @param interfaceInfoVO
+     * @return
+     */
+    public static InterfaceInfo voToObj(InterfaceInfoVO interfaceInfoVO) {
+        if (interfaceInfoVO == null) {
+            return null;
+        }
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        BeanUtils.copyProperties(interfaceInfoVO, interfaceInfo);
+        List<RequestParamsRemarkVO> requestParamsRemark1 = interfaceInfoVO.getRequestParamsRemark();
+        List<ResponseParamsRemarkVO> responseParamsRemark1 = interfaceInfoVO.getResponseParamsRemark();
+        if (requestParamsRemark1 != null) {
+            interfaceInfo.setRequestParamsRemark(JSONUtil.toJsonStr(requestParamsRemark1));
+        }
+        if (responseParamsRemark1 != null) {
+            interfaceInfo.setResponseParamsRemark(JSONUtil.toJsonStr(responseParamsRemark1));
+        }
+
+        return interfaceInfo;
+    }
+
+    /**
+     * 对象转包装类
+     *
+     * @param interfaceInfo
+     * @return
+     */
+    public static InterfaceInfoVO objToVo(InterfaceInfo interfaceInfo) {
+        if (interfaceInfo == null) {
+            return null;
+        }
+        InterfaceInfoVO interfaceInfoVO = new InterfaceInfoVO();
+        BeanUtils.copyProperties(interfaceInfo, interfaceInfoVO);
+        String requestParamsRemark1 = interfaceInfo.getRequestParamsRemark();
+        String responseParamsRemark1 = interfaceInfo.getResponseParamsRemark();
+        if (StrUtil.isNotBlank(requestParamsRemark1)) {
+            interfaceInfoVO.setRequestParamsRemark(JSONUtil.toList(requestParamsRemark1, RequestParamsRemarkVO.class));
+        }
+
+        if (StrUtil.isNotBlank(responseParamsRemark1)) {
+            interfaceInfoVO.setResponseParamsRemark(JSONUtil.toList(responseParamsRemark1, ResponseParamsRemarkVO.class));
+        }
+
+        return interfaceInfoVO;
+    }
+
+
 }

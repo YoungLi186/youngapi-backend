@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.yl.project.model.vo.RequestParamsRemarkVO;
+import com.yl.project.model.vo.ResponseParamsRemarkVO;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 接口信息
@@ -30,6 +33,15 @@ public class InterfaceInfoAddRequest implements Serializable {
      * 接口地址
      */
     private String url;
+
+    /**
+     * 请求参数说明
+     */
+    private List<RequestParamsRemarkVO> requestParamsRemark;
+    /**
+     * 响应参数说明
+     */
+    private List<ResponseParamsRemarkVO> responseParamsRemark;
 
     /**
      * 请求头
