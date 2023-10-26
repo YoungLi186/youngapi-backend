@@ -21,9 +21,11 @@ public class YApiClientConfig {
 
     private String secretKey;
 
+    private String host;
+
     @Bean
     public YApiClient yApiClient() {
-        return new YApiClient(accessKey, secretKey);
+        return new YApiClient(accessKey, secretKey, host);
     }
 
 
