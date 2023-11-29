@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @Description: com.yl.yapiclientsdk
  */
 @Configuration
-@ConfigurationProperties("yapi.client")
+@ConfigurationProperties(prefix = "yapi.client")
 @Data
 @ComponentScan
 public class YApiClientConfig {
@@ -27,6 +27,5 @@ public class YApiClientConfig {
     public YApiClient yApiClient() {
         return new YApiClient(accessKey, secretKey, host);
     }
-
 
 }

@@ -35,6 +35,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.yl.project.constant.CommonConstant.GATEWAY_HOST;
+
 /**
  * 接口信息 接口
  */
@@ -49,7 +51,8 @@ public class InterfaceInfoController {
     @Resource
     private UserService userService;
 
-
+    @Resource
+    private RedisLimiter redisLimiter;
     @Resource
     private YApiClient yApiClient;
 
@@ -381,10 +384,16 @@ public class InterfaceInfoController {
         if (!interfaceInfo.getStatus().equals(InterfaceInfoStatusEnum.ONLINE.getValue())) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口状态不为开启");
         }
+
         User loginUser = userService.getLoginUser(request);
+        // 限流
+        boolean rateLimit = redisLimiter.doRateLimit(loginUser.getId().toString());
+        if (!rateLimit) {
+            return ResultUtils.error(ErrorCode.TOO_MANY_REQUEST, "调用频繁,请稍后重试");
+        }
         String accessKey = loginUser.getAccessKey();
         String secretKey = loginUser.getSecretKey();
-        YApiClient yApiClient1 = new YApiClient(accessKey, secretKey);
+        YApiClient yApiClient1 = new YApiClient(accessKey, secretKey, GATEWAY_HOST);
         //调用
         String method = interfaceInfo.getMethod();
         String url = interfaceInfo.getUrl();

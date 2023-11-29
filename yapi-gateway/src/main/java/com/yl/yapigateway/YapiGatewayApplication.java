@@ -20,9 +20,8 @@ public class YapiGatewayApplication {
 
 
     public static void main(String[] args) {
-
         ConfigurableApplicationContext context = SpringApplication.run(YapiGatewayApplication.class, args);
-        YapiGatewayApplication application = context.getBean(YapiGatewayApplication.class);
+       // YapiGatewayApplication application = context.getBean(YapiGatewayApplication.class);
     }
 
 

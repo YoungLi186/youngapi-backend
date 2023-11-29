@@ -19,7 +19,6 @@ public class InnerInterfaceInfoServiceImpl implements InnerInterfaceInfoService 
 
     @Resource
     private InterfaceInfoMapper interfaceInfoMapper;
-
     @Override
     public InterfaceInfo getInterfaceInfo(String path, String method) {
         if (StringUtils.isAnyBlank(path, method)) {

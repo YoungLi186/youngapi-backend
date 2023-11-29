@@ -15,5 +15,7 @@ public interface CommonConstant {
      * 降序
      */
     String SORT_ORDER_DESC = " descend";
-    
+
+    String GATEWAY_HOST = "http://localhost:8090";
+
 }

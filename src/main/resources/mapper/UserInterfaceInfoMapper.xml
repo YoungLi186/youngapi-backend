@@ -34,6 +34,6 @@
              interface_info
         where user_interface_info.userId = #{userId}
           and interface_info.id = user_interface_info.interfaceInfoId
-        order by totalNum;
+        order by totalNum desc;
     </select>
 </mapper>

@@ -41,6 +41,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     private static final String SALT = "youngli186";
 
+    private static final String DEFAULT_AVATAR = "https://pic.imgdb.cn/item/653a1d00c458853aef5d56f3.jpg";
+
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -68,14 +70,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
             // 3. 插入数据
-            String accessKey=DigestUtils.md5DigestAsHex((SALT+RandomUtil.randomNumbers(5)).getBytes());
-            String secretKey=DigestUtils.md5DigestAsHex((SALT+RandomUtil.randomNumbers(8)).getBytes());
-            
+            String accessKey = DigestUtils.md5DigestAsHex((SALT + RandomUtil.randomNumbers(5)).getBytes());
+            String secretKey = DigestUtils.md5DigestAsHex((SALT + RandomUtil.randomNumbers(8)).getBytes());
+
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
             user.setAccessKey(accessKey);
             user.setSecretKey(secretKey);
+            user.setUserAvatar(DEFAULT_AVATAR);
+            user.setUserName("用户" + RandomUtil.randomString(6));
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
