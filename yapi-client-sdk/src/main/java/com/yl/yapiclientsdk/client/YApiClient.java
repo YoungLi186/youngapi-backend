@@ -6,6 +6,7 @@ import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.UnsupportedEncodingException;
@@ -22,6 +23,7 @@ import static com.yl.yapiclientsdk.util.SignUtils.genSign;
  * @Description: com.yl.yapiinterface.client
  */
 @Slf4j
+
 public class YApiClient {
 
 
@@ -49,11 +51,28 @@ public class YApiClient {
         return map;
     }
 
-    public String invokeInterface(String params, String url, String method) throws UnsupportedEncodingException {
+    public String invokeInterfaceToGateWay(String params, String url, String method) throws UnsupportedEncodingException {
         try {
             HttpResponse httpResponse = HttpRequest.post(host + url)
                     .header("Accept-Charset", StandardCharsets.UTF_8.name())
                     .addHeaders(getHeaderMap(params, method))
+                    .body(params)
+                    .timeout(5000) // 设置超时时间，单位为毫秒
+                    .execute();
+            return JSONUtil.formatJsonStr(httpResponse.body());
+        } catch (Exception e) {
+            // 处理异常
+            log.error(e.getMessage());
+            return e.getMessage(); // 返回错误信息
+        }
+    }
+
+    public String invokeInterface(String params, String url, String host) throws UnsupportedEncodingException {
+        try {
+
+            HttpResponse httpResponse = HttpRequest.post(host + url)
+                    .header("Accept-Charset", StandardCharsets.UTF_8.name())
+                    .header("body", URLUtil.encode(params, StandardCharsets.UTF_8))
                     .body(params)
                     .timeout(5000) // 设置超时时间，单位为毫秒
                     .execute();

@@ -1,15 +1,24 @@
 package com.yl;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONUtil;
 import com.yl.project.MainApplication;
 import com.yl.project.mapper.InterfaceInfoMapper;
 import com.yl.project.mapper.UserInterfaceInfoMapper;
 import com.yl.project.model.vo.MyInterfaceInfoVO;
 import com.yl.project.service.UserInterfaceInfoService;
+import com.yl.yapiclientsdk.client.YApiClient;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import yapicommon.model.entity.UserInterfaceInfo;
 
 import javax.annotation.Resource;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -18,6 +27,7 @@ import java.util.List;
  */
 
 @SpringBootTest(classes = MainApplication.class)
+@Slf4j
 public class UserInterfaceInfoServiceImplTest {
 
 
@@ -26,6 +36,10 @@ public class UserInterfaceInfoServiceImplTest {
 
     @Resource
     private UserInterfaceInfoService userInterfaceInfoService;
+
+
+    @Resource
+    private YApiClient yApiClient;
 
 
     @Test
@@ -47,6 +61,12 @@ public class UserInterfaceInfoServiceImplTest {
     void test2() {
         List<MyInterfaceInfoVO> myInterfaceInfoVO = userInterfaceInfoService.getMyInterfaceInfoVO(1715268183728062466L);
         System.out.println(myInterfaceInfoVO);
+    }
+
+
+    @Test
+    void test3() {
+
     }
 
 

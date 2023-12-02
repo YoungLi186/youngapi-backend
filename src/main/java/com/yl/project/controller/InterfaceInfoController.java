@@ -192,7 +192,7 @@ public class InterfaceInfoController {
 
         try {
             //判断接口是否可以成功调用
-            String result = yApiClient.invokeInterface(requestParams, url, method);
+            String result = yApiClient.invokeInterfaceToGateWay(requestParams, url, method);
             if (StringUtils.isBlank(result)) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口无法调用");
             }
@@ -397,7 +397,7 @@ public class InterfaceInfoController {
         //调用
         String method = interfaceInfo.getMethod();
         String url = interfaceInfo.getUrl();
-        String result = yApiClient1.invokeInterface(userRequestParams, url, method);
+        String result = yApiClient1.invokeInterfaceToGateWay(userRequestParams, url, method);
         return ResultUtils.success(result);
     }
 
