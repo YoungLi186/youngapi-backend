@@ -10,8 +10,6 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
-
   # session 配置
   session:
     # store-type: redis
@@ -22,14 +20,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/yapi
     username: root
-    password: 123456
+    password: 73fe1ec6cc0b9d9e
   # Redis 配置
   redis:
     database: 1
     host: localhost
     port: 6379
     timeout: 5000
-#    password: 123456
+    password: 5115252ylll
 
 server:
   address: 0.0.0.0
@@ -53,12 +51,16 @@ mybatis-plus:
 dubbo:
   application:
     name: dubbo-springboot-demo-provider
+    qosEnable: true
+    qosPort: 33333
+    qosAcceptForeignIp: false
   protocol:
     name: dubbo
     port: -1
   registry:
     id: nacos-registry
     address: nacos://localhost:8848
+
 yapi:
   client:
     access-key: 9474c6ff4a535daa46678de0f225ea3d
