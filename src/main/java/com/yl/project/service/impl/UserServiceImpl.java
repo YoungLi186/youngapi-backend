@@ -245,4 +245,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 sortField);
         return queryWrapper;
     }
+
+    @Override
+    public User updateSecretKey(Long userId) {
+        if (userId == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
+        }
+        // 3. 插入数据
+        String accessKey = DigestUtils.md5DigestAsHex((SALT + RandomUtil.randomNumbers(5)).getBytes());
+        String secretKey = DigestUtils.md5DigestAsHex((SALT + RandomUtil.randomNumbers(8)).getBytes());
+        User user = new User();
+        user.setId(userId);
+        user.setAccessKey(accessKey);
+        user.setSecretKey(secretKey);
+        boolean success = this.updateById(user);
+        if (!success) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "用户不存在");
+        }
+        return this.getById(userId);
+
+    }
 }

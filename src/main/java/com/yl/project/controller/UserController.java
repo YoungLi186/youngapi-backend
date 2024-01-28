@@ -276,4 +276,14 @@ public class UserController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
+
+    //更新秘钥
+    @PostMapping("update/SecretKey")
+    public BaseResponse<UserVO> updateSecretKey(@RequestBody User user) {
+        Long userId = user.getId();
+        User user1 = userService.updateSecretKey(userId);
+        UserVO userVO = userService.getUserVO(user1);
+        return ResultUtils.success(userVO);
+    }
+
 }
